@@ -1,18 +1,17 @@
 import streamlit as st
 
-# Page configuration
+
 st.set_page_config(
     page_title="Master 2 Finance Calculator",
     page_icon="📊",
     layout="wide"
 )
 
-# Custom CSS
 st.markdown("""
     <style>
     .main-title {
         font-size: 2.5rem;
-        color: #1E3D59;
+        color: #ff812f;
         text-align: center;
         padding: 1.5rem 0;
         background: #f5f5f5;
@@ -41,10 +40,9 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Title with custom styling
 st.markdown("""
     <div class="main-title">
-        📚 Master 2 Finance - S1 Grade Calculator<br>
+        Master 2 Finance - S1 Grade Calculator<br>
         <span style="font-size: 1.2rem; color: #666;">By Sofiane Belkacem Nacer</span>
     </div>
     """, unsafe_allow_html=True)
@@ -74,13 +72,13 @@ def calculate_semester_average():
             td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
         except (ValueError, TypeError):
-            st.error(f"⚠️ Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
+            st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
             return
 
     total = 0
     for subject, grades in subjects_data.items():
         average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
-        weight = 3  # All subjects have the same weight
+        weight = 3  
         total += average * weight
 
     semester_average = total / 30
@@ -97,12 +95,10 @@ def calculate_semester_average():
         </div>
     """, unsafe_allow_html=True)
 
-# Create a container for better spacing
+
 with st.container():
-    # Create columns for better organization
     col1, col2 = st.columns(2)
     
-    # Split subjects between columns
     half = len(subjects) // 2
     
     for i, subject in enumerate(subjects):
@@ -129,10 +125,8 @@ with st.container():
                     format="%.2f"
                 )
 
-# Add some spacing before the button
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Center the button using columns
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if st.button("Calculer la moyenne"):
