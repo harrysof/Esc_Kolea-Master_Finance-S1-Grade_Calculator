@@ -17,6 +17,7 @@ st.markdown("""
         background: #0e1118;
         border-radius: 10px;
         margin-bottom: 2rem;
+        font-weight: bold;
     }
     .subject-header {
         color: #ff812f;
@@ -128,5 +129,5 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    if st.button("Calculer la moyenne"):
+    if st.button("Calculer la Moyenne"):
         calculate_semester_average()
