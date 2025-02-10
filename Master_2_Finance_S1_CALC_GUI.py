@@ -19,7 +19,7 @@ st.markdown("""
         margin-bottom: 2rem;
     }
     .subject-header {
-        color: #2C5282;
+        color: #ff812f;
         font-size: 1.2rem;
         padding: 0.5rem 0;
         border-bottom: 2px solid #E2E8F0;
