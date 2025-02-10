@@ -2,7 +2,7 @@ import streamlit as st
 
 
 for subject in [
-    "Finance Publique","Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
+    "Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
     "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
     "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"
 ]:
@@ -34,9 +34,9 @@ def calculate_semester_average():
     total = 0
     for subject, grades in subjects_data.items():
         average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)  
-        weight = 3 if subject in ["Finance Publique","Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
-                                  "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
-                                  "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"] else 3
+        weight = 3 if subject in [ "Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
+                                   "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
+                                   "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"] else 3
         total += average * weight
 
     semester_average = total / 30
@@ -51,9 +51,9 @@ def calculate_semester_average():
 st.title("Master 2 Finance - S1 Grade Calculator ~ By Sofiane Belkacem Nacer")
 
 subjects = [
-    "Finance Publique","Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
-    "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
-    "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires" 
+     "Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
+     "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
+     "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires" 
 ]
 
 for subject in subjects:
