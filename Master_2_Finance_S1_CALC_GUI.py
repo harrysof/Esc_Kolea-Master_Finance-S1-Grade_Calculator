@@ -36,7 +36,7 @@ def calculate_semester_average():
         average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)  
         weight = 3 if subject in ["Finance Publique","Théorie de la Décision et des Jeux","Stratégie d'Entreprise", "Théorie Financière",
                                   "Marchés des Capitaux", "Comptabilité Approfondie", "PMO","Séries Temporelles",
-                                  "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"]
+                                  "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"] else 3
         total += average * weight
 
     semester_average = total / 30
