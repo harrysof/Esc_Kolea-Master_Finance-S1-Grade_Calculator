@@ -53,7 +53,6 @@ subjects = [
     "Systèmes d'Information", "Contrôle de Gestion", "Technique Bancaires"
 ]
 
-# Initialize session state
 for subject in subjects:
     exam_key = f"{subject}_exam"
     td_key = f"{subject}_TD"
