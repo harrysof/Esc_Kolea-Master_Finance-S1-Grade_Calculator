@@ -89,7 +89,7 @@ def calculate_semester_average():
         <div class="result-box">
             <h3 style="color: #2F855A; margin: 0;">📊 Résultats</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
-                Moyenne Semestrielle: <strong>{formatted_float}</strong><br>
+                Moyenne S1: <strong>{formatted_float}</strong><br>
                 Total: <strong>{better_total}</strong>
             </p>
         </div>
