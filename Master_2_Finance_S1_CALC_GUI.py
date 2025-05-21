@@ -210,14 +210,12 @@ with semester_tabs[0]:
 with semester_tabs[1]:
     st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
 
-    subjects_list = list(s2_subjects.keys())
-    for subject in subjects_list:
+    for subject in s2_subjects:
         coef = s2_subjects[subject]
-
         st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-        col_exam, col_td = st.columns(2)
-        with col_exam:
+        col1, col2 = st.columns(2)
+        with col1:
             st.number_input(
                 "Exam",
                 key=f"S2_{subject}_exam",
@@ -226,7 +224,7 @@ with semester_tabs[1]:
                 step=0.05,
                 format="%.2f"
             )
-        with col_td:
+        with col2:
             st.number_input(
                 "TD",
                 key=f"S2_{subject}_TD",
@@ -238,10 +236,8 @@ with semester_tabs[1]:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col_btn_left, col_btn_center, col_btn_right = st.columns([1, 2, 1])
-    with col_btn_center:
-        if st.button("Calculer la Moyenne S2"):
-            calculate_semester_average(2, s2_subjects)
+    if st.button("Calculer la Moyenne S2"):
+        calculate_semester_average(2, s2_subjects)
 
 # Add footer with credits
 st.markdown("""
