@@ -178,7 +178,7 @@ with semester_tabs[0]:
     for subject in subjects_list:
         coef = s1_subjects[subject]
 
-        st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="subject-header">{subject}</div>', unsafe_allow_html=True)
 
         col_exam, col_td = st.columns(2)
         with col_exam:
@@ -212,7 +212,7 @@ with semester_tabs[1]:
 
     for subject in s2_subjects:
         coef = s2_subjects[subject]
-        st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="subject-header s2-color">{subject}</div>', unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
         with col1:
