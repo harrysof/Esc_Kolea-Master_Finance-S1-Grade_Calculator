@@ -177,6 +177,7 @@ with semester_tabs[0]:
     subjects_list = list(s1_subjects.keys())
     for subject in subjects_list:
         coef = s1_subjects[subject]
+        # Display just the subject name without the coefficient
         st.markdown(f'<div class="subject-header">{subject}</div>', unsafe_allow_html=True)
 
         col_exam, col_td = st.columns(2)
@@ -211,6 +212,7 @@ with semester_tabs[1]:
 
     for subject in s2_subjects:
         coef = s2_subjects[subject]
+        # Display just the subject name without the coefficient
         st.markdown(f'<div class="subject-header s2-color">{subject}</div>', unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
@@ -244,4 +246,3 @@ st.markdown("""
     <p style="color: #dcdcdc; margin: 0;">© 2025 Master Finance Grade Calculator | Created by Sofiane Belkacem Nacer</p>
 </div>
 """, unsafe_allow_html=True)
-
