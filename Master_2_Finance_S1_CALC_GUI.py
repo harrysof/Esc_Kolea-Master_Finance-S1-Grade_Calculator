@@ -177,7 +177,6 @@ with semester_tabs[0]:
     subjects_list = list(s1_subjects.keys())
     for subject in subjects_list:
         coef = s1_subjects[subject]
-
         st.markdown(f'<div class="subject-header">{subject}</div>', unsafe_allow_html=True)
 
         col_exam, col_td = st.columns(2)
