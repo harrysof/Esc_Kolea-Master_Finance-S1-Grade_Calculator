@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Master Finance Calculator",
-    page_icon="📊",
+    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fcurrency-32%2F55%2Fcurrency-18-4096.png&f=1&nofb=1&ipt=925920844e55526262ccb6bc80b9f2cecfa279d58f8d79f576f16b989b686d43",
     layout="wide"
 )
 
