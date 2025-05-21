@@ -185,26 +185,26 @@ with semester_tabs[0]:
             coef = s1_subjects[subject]
            with current_col:
     st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-    with st.container():
-        subcol1, subcol2 = st.columns(2)
-        with subcol1:
-            st.number_input(
-                "Exam",
-                key=f"S1_{subject}_exam",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
-        with subcol2:
-            st.number_input(
-                "TD",
-                key=f"S1_{subject}_TD",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
+
+subcol1, subcol2 = st.columns(2)
+with subcol1:
+    st.number_input(
+        "Exam",
+        key=f"S1_{subject}_exam",
+        min_value=0.0,
+        value=None,
+        step=0.05,
+        format="%.2f"
+    )
+with subcol2:
+    st.number_input(
+        "TD",
+        key=f"S1_{subject}_TD",
+        min_value=0.0,
+        value=None,
+        step=0.05,
+        format="%.2f"
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
