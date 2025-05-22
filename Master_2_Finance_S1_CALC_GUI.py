@@ -57,7 +57,7 @@ st.markdown("""
         font-weight: bold;
     }
     .s2-color {
-        color: #2fffe9;
+        color: #E6BEA3;
     }
     
     /* Corner GIF Styles */
