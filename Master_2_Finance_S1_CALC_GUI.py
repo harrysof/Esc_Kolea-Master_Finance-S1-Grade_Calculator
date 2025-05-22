@@ -94,7 +94,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Add the corner GIF - Replace the URL with your desired GIF
 st.markdown("""
     <img src="https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif" class="corner-gif" alt="Finance GIF">
     """, unsafe_allow_html=True)
@@ -106,7 +105,6 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# Define subjects and coefficients for each semester
 s1_subjects = {
     "Théorie de la Décision et des Jeux": 3,
     "Stratégie d'Entreprise": 3,
@@ -134,16 +132,13 @@ s2_subjects = {
     "Modèles stochastiques": 3
 }
 
-# Initialize session state for semester selection
 if 'current_semester' not in st.session_state:
     st.session_state.current_semester = "S1"
 
-# Create tabs for semester selection
 col1, col2, col3 = st.columns([1, 3, 1])
 with col2:
     semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
 
-# Initialize session state for all subjects across all semesters
 for subject in s1_subjects:
     exam_key = f"S1_{subject}_exam"
     td_key = f"S1_{subject}_TD"
@@ -186,16 +181,15 @@ def calculate_semester_average(semester, subjects_with_coef):
     formatted_float = "{:.2f}".format(semester_average)
     better_total = "{:.2f}".format(total_weighted_sum)
     
-    # Determine color based on average score
-    color = "#FF0000"  # Default red for below 10
+    color = "#FF0000"  
     if semester_average >= 15:
-        color = "#D89CF6"  # Purple for 15 and up
+        color = "#D89CF6"  
     elif semester_average >= 14:
-        color = "#12CAD6"  # Teal for 14-15
+        color = "#12CAD6"  
     elif semester_average >= 12:
-        color = "#50D890"  # Green for 12-14
+        color = "#50D890"  
     elif semester_average >= 10:
-        color = "#FE9801"  # Orange for 10-12
+        color = "#FE9801"  
     
     st.markdown(f"""
         <div class="result-box">
@@ -207,14 +201,12 @@ def calculate_semester_average(semester, subjects_with_coef):
         </div>
     """, unsafe_allow_html=True)
 
-# Display subjects and input fields based on selected semester
 with semester_tabs[0]:
     st.markdown("<h2 style='text-align: center;'>Semestre 1</h2>", unsafe_allow_html=True)
 
     subjects_list = list(s1_subjects.keys())
     for subject in subjects_list:
         coef = s1_subjects[subject]
-        # Display just the subject name without the coefficient
         st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
         col_exam, col_td = st.columns(2)
@@ -249,7 +241,6 @@ with semester_tabs[1]:
 
     for subject in s2_subjects:
         coef = s2_subjects[subject]
-        # Display just the subject name without the coefficient
         st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
@@ -277,7 +268,6 @@ with semester_tabs[1]:
     if st.button("Calculer la Moyenne S2"):
         calculate_semester_average(2, s2_subjects)
 
-# Add footer with credits
 st.markdown("""
 <div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #0e1118; border-radius: 10px;">
     <p style="color: #dcdcdc; margin: 0;">© 2025 Master Finance Grade Calculator | Created by Sofiane Belkacem Nacer</p>
