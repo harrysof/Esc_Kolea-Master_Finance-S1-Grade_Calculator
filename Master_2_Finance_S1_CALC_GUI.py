@@ -95,7 +95,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.markdown("""
-    <img src="https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif" class="corner-gif" alt="Finance GIF">
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="corner-gif" alt="Finance GIF">
     """, unsafe_allow_html=True)
 
 st.markdown("""
