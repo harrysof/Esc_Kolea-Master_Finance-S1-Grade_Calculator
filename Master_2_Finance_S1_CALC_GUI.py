@@ -19,7 +19,7 @@ st.markdown("""
         font-weight: bold;
     }
     .subject-header {
-        color: #ff812f;
+        color: #FFCDAC;
         font-size: 1.2rem;
         padding: 0.5rem 0;
         border-bottom: 2px solid #E2E8F0;
