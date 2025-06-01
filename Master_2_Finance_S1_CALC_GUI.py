@@ -269,7 +269,7 @@ with semester_tabs[0]:
                     # Adjust margin if needed for vertical alignment with number_inputs
                     module_avg_html = f"""
                     <div style="margin-top: 0rem;">
-                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'} {/* Conditionally show label */}
+                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'}
                         <div class="module-average-display" style="color: {avg_color};">
                             {avg_val:.2f}
                         </div>
