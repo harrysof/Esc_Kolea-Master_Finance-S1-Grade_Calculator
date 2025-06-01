@@ -18,8 +18,14 @@ st.markdown("""
         margin-bottom: 2rem;
         font-weight: bold;
     }
-    /* Removed .subject-header as expander handles titles */
-
+    .subject-header {
+        color: #FFCDAC;
+        font-size: 1.2rem;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid #E2E8F0;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem; /* Space before inputs */
+    }
     .stButton > button {
         width: 100%;
         background-color: #ff812f;
@@ -32,9 +38,27 @@ st.markdown("""
         background-color: #0e1118;
         border: 1px solid #48BB78;
     }
-
-    .s2-color { /* For S2 subject headers in expanders */
-        color: #E6BEA3 !important;
+    .semester-selector { /* This class seems unused in the provided reverted code, keeping for reference */
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .semester-button { /* This class seems unused, keeping for reference */
+        background-color: #4f8bf9;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 20px;
+        text-align: center;
+        cursor: pointer;
+        width: 150px;
+    }
+    .semester-button.active { /* This class seems unused, keeping for reference */
+        background-color: #2662de;
+        font-weight: bold;
+    }
+    .s2-color { /* For S2 subject headers */
+        color: #E6BEA3 !important; 
     }
     
     /* Corner GIF Styles */
@@ -56,7 +80,7 @@ st.markdown("""
         transition: all 0.3s ease;
     }
     
-    /* Styling for NumberInput labels and boxes */
+    /* Styling for NumberInput labels and boxes - general styling */
     div[data-testid="stNumberInput"] > label {
         font-weight: normal;
         color: #dcdcdc; 
@@ -75,29 +99,8 @@ st.markdown("""
         box-sizing: border-box; 
         width: 100%; 
     }
-    
-    .module-average-label { /* Label for "Moyenne" */
-        font-weight: normal;
-        color: #dcdcdc;
-        margin-bottom: 0.2rem;
-        display: block;
-        font-size: 0.9rem; 
-    }
-    
-    .module-average-display { /* The box displaying the "Moyenne" value */
-        border-radius: 4px;
-        border: 1px solid #4A5568;
-        background-color: #1A202C; 
-        padding: 0.4rem 0.6rem;
-        font-size: 0.9rem; 
-        height: 38px; 
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        opacity: 0.9; 
-        width: 100%;
-    }
 
+    /* Tab styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
         justify-content: center;
@@ -113,33 +116,6 @@ st.markdown("""
     .stTabs [aria-selected="true"] {
         background-color: #ff812f; 
     }
-
-    /* Expander styling */
-    .stExpander > div > button { /* Target expander header button */
-        font-size: 1.1rem; /* Slightly smaller than original subject-header */
-        /* color: #FFCDAC; <- Removed default color here, will be set by tab */
-    }
-    .stExpander > div > button p { /* Target the paragraph inside the button */
-        font-weight: normal; /* Make expander title normal weight if desired */
-    }
-    .stExpander[aria-expanded="true"] > div > button {
-        /* Style for expanded header if needed */
-    }
-    .stExpander div[data-testid="stVerticalBlock"] { /* Content of expander */
-        padding-top: 0.5rem; /* Add some padding to content */
-    }
-    
-    /* Styling for S1 expander headers (content of the first tab) */
-    section[aria-labelledby$="-tab-0"] .stExpander > div > button {
-        color: #FFCDAC; /* S1 color */
-    }
-
-    /* Styling for S2 expander headers (content of the second tab) */
-    section[aria-labelledby$="-tab-1"] .stExpander > div > button {
-        color: #E6BEA3; /* S2 color */
-    }
-    /* Removed .s2-expander rule as it's no longer used */
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -154,71 +130,87 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-s1_subjects_coef = {
-    "Théorie de la Décision et des Jeux": 3, "Stratégie d'Entreprise": 3, "Théorie Financière": 3,
-    "Marchés des Capitaux": 3, "Comptabilité Approfondie": 3, "PMO": 3, "Séries Temporelles": 3,
-    "Systèmes d'Information": 3, "Contrôle de Gestion": 3, "Technique Bancaires": 3
+s1_subjects_coef = { # Renamed to s1_subjects_coef for clarity with S2
+    "Théorie de la Décision et des Jeux": 3,
+    "Stratégie d'Entreprise": 3,
+    "Théorie Financière": 3,
+    "Marchés des Capitaux": 3,
+    "Comptabilité Approfondie": 3,
+    "PMO": 3,
+    "Séries Temporelles": 3,
+    "Systèmes d'Information": 3,
+    "Contrôle de Gestion": 3,
+    "Technique Bancaires": 3
 }
 
-s2_subjects_coef = {
-    "Économie de l'information": 1.5, "Stage": 3, "Droit pénal des affaires": 3, "Économie managériale": 3,
-    "Initiation à la méthodologie": 1.5, "Économie monétaire": 3, "Gestion de portefeuille": 3,
-    "Évaluation des projets d'investissement": 3, "Analyse et conception de systèmes d'information": 3,
-    "Convexité et optimisation": 3, "Modèles stochastiques": 3
+s2_subjects_coef = { # Renamed to s2_subjects_coef for clarity with S1
+    "Économie de l'information": 1.5,
+    "Stage": 3,
+    "Droit pénal des affaires": 3,
+    "Économie managériale": 3,
+    "Initiation à la méthodologie": 1.5,
+    "Économie monétaire": 3,
+    "Gestion de portefeuille": 3,
+    "Évaluation des projets d'investissement": 3,
+    "Analyse et conception de systèmes d'information": 3,
+    "Convexité et optimisation": 3,
+    "Modèles stochastiques": 3
 }
 
-for subject in s1_subjects_coef.keys():
+# Session state initialization (only for exam and TD)
+for subject in s1_subjects_coef.keys(): # Use .keys() for clarity
     exam_key = f"S1_{subject}_exam"
     td_key = f"S1_{subject}_TD"
-    module_avg_key = f"S1_{subject}_module_avg"
-    if exam_key not in st.session_state: st.session_state[exam_key] = None
-    if td_key not in st.session_state: st.session_state[td_key] = None
-    if module_avg_key not in st.session_state: st.session_state[module_avg_key] = 0.0
+    if exam_key not in st.session_state:
+        st.session_state[exam_key] = None
+    if td_key not in st.session_state:
+        st.session_state[td_key] = None
 
-for subject in s2_subjects_coef.keys():
+for subject in s2_subjects_coef.keys(): # Use .keys() for clarity
     exam_key = f"S2_{subject}_exam"
     td_key = f"S2_{subject}_TD"
-    module_avg_key = f"S2_{subject}_module_avg"
-    if exam_key not in st.session_state: st.session_state[exam_key] = None
-    if td_key not in st.session_state: st.session_state[td_key] = None
-    if module_avg_key not in st.session_state: st.session_state[module_avg_key] = 0.0
+    if exam_key not in st.session_state:
+        st.session_state[exam_key] = None
+    if td_key not in st.session_state:
+        st.session_state[td_key] = None
 
-def calculate_and_store_module_average(prefix, subject_name):
-    exam_key = f"{prefix}_{subject_name}_exam"
-    td_key = f"{prefix}_{subject_name}_TD"
-    module_avg_storage_key = f"{prefix}_{subject_name}_module_avg"
-
-    exam_grade_val = st.session_state.get(exam_key)
-    td_grade_val = st.session_state.get(td_key)
-
-    try: exam_grade_float = float(exam_grade_val) if exam_grade_val is not None else 0.0
-    except (ValueError, TypeError): exam_grade_float = 0.0
+def calculate_semester_average(semester_num, subjects_map): # Parameter name changed for clarity
+    subjects_data = {}
+    prefix = f"S{semester_num}_" # Corrected prefix to S1_ or S2_
     
-    try: td_grade_float = float(td_grade_val) if td_grade_val is not None else 0.0
-    except (ValueError, TypeError): td_grade_float = 0.0
-    
-    exam_grade_float = max(0.0, min(20.0, exam_grade_float))
-    td_grade_float = max(0.0, min(20.0, td_grade_float))
+    for subject, coef in subjects_map.items():
+        exam_key = f"{prefix}{subject}_exam"
+        td_key = f"{prefix}{subject}_TD"
+        try:
+            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
+            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
+            # Input validation
+            if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
+                st.error(f"Les notes pour '{subject}' doivent être entre 0 et 20.")
+                # Optionally clear the invalid inputs or mark them as invalid for processing
+                st.session_state[exam_key] = 0.0 
+                st.session_state[td_key] = 0.0
+                exam_grade, td_grade = 0.0, 0.0 # Reset for calculation if error
+                # return # Could also return here to stop calculation on error
 
-    average = (exam_grade_float * 0.67) + (td_grade_float * 0.33)
-    st.session_state[module_avg_storage_key] = average
+            subjects_data[subject] = {"exam": exam_grade, "td": td_grade, "coef": coef}
+        except (ValueError, TypeError):
+            st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
+            return # Stop calculation if there's a non-numeric input
 
-def calculate_semester_average(semester_num, subjects_with_coef_map):
-    prefix = f"S{semester_num}"
     total_weighted_sum = 0
-    total_credits = sum(subjects_with_coef_map.values())
-    
-    for subject, coef in subjects_with_coef_map.items():
-        module_avg_key = f"{prefix}_{subject}_module_avg"
-        if st.session_state.get(f"{prefix}_{subject}_exam") is not None or \
-           st.session_state.get(f"{prefix}_{subject}_TD") is not None:
-            calculate_and_store_module_average(prefix, subject)
-            
-        module_avg = float(st.session_state.get(module_avg_key, 0.0))
-        total_weighted_sum += module_avg * coef
+    total_credits = sum(subjects_map.values())
+    if total_credits == 0:
+        st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
+        return
+
+    for subject, data in subjects_data.items():
+        average = (data["exam"] * 0.67) + (data["td"] * 0.33)
+        total_weighted_sum += average * data["coef"]
 
     semester_average = total_weighted_sum / total_credits if total_credits else 0
     formatted_float = "{:.2f}".format(semester_average)
+    # better_total = "{:.2f}".format(total_weighted_sum) # This was in original, but not used in result display
     
     color = "#FF0000"  
     if semester_average >= 15: color = "#D89CF6"  
@@ -230,18 +222,21 @@ def calculate_semester_average(semester_num, subjects_with_coef_map):
         <div class="result-box">
             <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester_num}</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
-                Moyenne S{semester_num}: <strong style="color: {color}">{formatted_float}</strong>
+                Moyenne S{semester_num}: <strong style="color: {color}">{formatted_float}</strong><br>
+                {'' if semester_num == 2 else f"Total Points Pondérés: <strong>{total_weighted_sum:.2f}</strong>"} {/* Example if you want to show total points for S1 */}
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-col_tabs_outer1, col_tabs_main, col_tabs_outer2 = st.columns([0.5, 3, 0.5])
+# Using columns to center the tabs
+col_tabs_outer1, col_tabs_main, col_tabs_outer2 = st.columns([0.5, 3, 0.5]) 
 with col_tabs_main:
     semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
 
 with semester_tabs[0]:
     st.markdown("<h2 style='text-align: center; color: #FFCDAC;'>Semestre 1</h2>", unsafe_allow_html=True)
-    
+
+    # Using two columns for S1 subjects layout
     s1_list = list(s1_subjects_coef.keys())
     half_s1 = len(s1_list) // 2
     col_s1_left, col_s1_right = st.columns(2)
@@ -250,39 +245,24 @@ with semester_tabs[0]:
         current_column = col_s1_left if i < half_s1 else col_s1_right
         with current_column:
             coef = s1_subjects_coef[subject]
-            with st.expander(f"{subject} (Coef: {coef})", expanded=True):
-                exam_key_s1 = f"S1_{subject}_exam"
-                td_key_s1 = f"S1_{subject}_TD"
-                module_avg_key_s1 = f"S1_{subject}_module_avg"
+            st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-                subcol_exam, subcol_td, subcol_avg = st.columns(3)
-                with subcol_exam:
-                    st.number_input("Exam", key=exam_key_s1, min_value=0.0, max_value=20.0,
-                                    value=st.session_state.get(exam_key_s1), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S1", subject), label_visibility="collapsed")
-                with subcol_td:
-                    st.number_input("TD", key=td_key_s1, min_value=0.0, max_value=20.0,
-                                    value=st.session_state.get(td_key_s1), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S1", subject), label_visibility="collapsed")
-                with subcol_avg:
-                    avg_val = float(st.session_state.get(module_avg_key_s1, 0.0))
-                    avg_color = "#FF0000" 
-                    if avg_val >= 15: avg_color = "#D89CF6" 
-                    elif avg_val >= 10: avg_color = "#50D890" 
-                    elif avg_val >= 7: avg_color = "#4682B4"
-                    
-                    module_avg_html = f"""
-                    <div style="margin-top: 0rem;">
-                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'}
-                        <div class="module-average-display" style="color: {avg_color};">
-                            {avg_val:.2f}
-                        </div>
-                    </div>
-                    """
-                    st.markdown(module_avg_html, unsafe_allow_html=True)
-    
+            # Exam and TD inputs in two sub-columns
+            sub_col_exam, sub_col_td = st.columns(2)
+            with sub_col_exam:
+                st.number_input(
+                    "Exam", key=f"S1_{subject}_exam", min_value=0.0, max_value=20.0,
+                    value=st.session_state.get(f"S1_{subject}_exam"), step=0.05, format="%.2f"
+                )
+            with sub_col_td:
+                st.number_input(
+                    "TD", key=f"S1_{subject}_TD", min_value=0.0, max_value=20.0,
+                    value=st.session_state.get(f"S1_{subject}_TD"), step=0.05, format="%.2f"
+                )
+
     st.markdown("<br>", unsafe_allow_html=True)
-    btn_col_s1_1, btn_col_s1_2, btn_col_s1_3 = st.columns([1,1,1])
+    # Centering the button for S1
+    btn_col_s1_1, btn_col_s1_2, btn_col_s1_3 = st.columns([1,1,1]) 
     with btn_col_s1_2:
         if st.button("Calculer Moyenne S1", key="calc_s1_btn", use_container_width=True):
             calculate_semester_average(1, s1_subjects_coef)
@@ -290,49 +270,33 @@ with semester_tabs[0]:
 with semester_tabs[1]:
     st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
 
+    # Using two columns for S2 subjects layout
     s2_list = list(s2_subjects_coef.keys())
     half_s2 = len(s2_list) // 2
     col_s2_left, col_s2_right = st.columns(2)
 
     for i, subject in enumerate(s2_list):
         current_column = col_s2_left if i < half_s2 else col_s2_right
-        # REMOVED: current_column.markdown('<div class="s2-expander">', unsafe_allow_html=True)
-        with current_column: 
+        with current_column:
             coef = s2_subjects_coef[subject]
-            with st.expander(f"{subject} (Coef: {coef})", expanded=True):
-                exam_key_s2 = f"S2_{subject}_exam"
-                td_key_s2 = f"S2_{subject}_TD"
-                module_avg_key_s2 = f"S2_{subject}_module_avg"
+            # Added s2-color class for S2 subject headers
+            st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-                subcol_exam, subcol_td, subcol_avg = st.columns(3)
-                with subcol_exam:
-                    st.number_input("Exam",key=exam_key_s2, min_value=0.0, max_value=20.0,
-                                    value=st.session_state.get(exam_key_s2), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S2", subject), label_visibility="collapsed")
-                with subcol_td:
-                    st.number_input("TD", key=td_key_s2, min_value=0.0, max_value=20.0,
-                                    value=st.session_state.get(td_key_s2), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S2", subject), label_visibility="collapsed")
-                with subcol_avg:
-                    avg_val = float(st.session_state.get(module_avg_key_s2, 0.0))
-                    avg_color = "#FF0000"
-                    if avg_val >= 15: avg_color = "#D89CF6"
-                    elif avg_val >= 10: avg_color = "#50D890"
-                    elif avg_val >= 7: avg_color = "#4682B4"
-                    
-                    module_avg_html = f"""
-                    <div style="margin-top: 0rem;">
-                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'}
-                        <div class="module-average-display" style="color: {avg_color};">
-                            {avg_val:.2f}
-                        </div>
-                    </div>
-                    """
-                    st.markdown(module_avg_html, unsafe_allow_html=True)
-        # REMOVED: current_column.markdown('</div>', unsafe_allow_html=True) 
-
+            # Exam and TD inputs in two sub-columns
+            sub_col_exam, sub_col_td = st.columns(2)
+            with sub_col_exam:
+                st.number_input(
+                    "Exam", key=f"S2_{subject}_exam", min_value=0.0, max_value=20.0,
+                    value=st.session_state.get(f"S2_{subject}_exam"), step=0.05, format="%.2f"
+                )
+            with sub_col_td:
+                st.number_input(
+                    "TD", key=f"S2_{subject}_TD", min_value=0.0, max_value=20.0,
+                    value=st.session_state.get(f"S2_{subject}_TD"), step=0.05, format="%.2f"
+                )
 
     st.markdown("<br>", unsafe_allow_html=True)
+    # Centering the button for S2
     btn_col_s2_1, btn_col_s2_2, btn_col_s2_3 = st.columns([1,1,1])
     with btn_col_s2_2:
         if st.button("Calculer Moyenne S2", key="calc_s2_btn", use_container_width=True):
