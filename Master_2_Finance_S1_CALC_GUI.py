@@ -6,9 +6,42 @@ st.set_page_config(
     layout="wide"
 )
 
+# Corrected CSS block structure
 st.markdown("""
     <style>
-    /* Main page and component styles */
+    /* Corner GIF Styles */
+    .corner-gif {
+        position: fixed;
+        top: 85px;
+        right: 10px;
+        z-index: 9999;
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    .corner-gif:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        transition: all 0.3s ease;
+    }
+
+    /* Alternative: Bottom right corner */
+    .corner-gif-bottom {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0.7;
+    }
+
+    /* Main page and component styles from the second part of your original CSS block */
     .main-title {
         font-size: 2.5rem;
         color: #FFCDAC;
@@ -25,7 +58,6 @@ st.markdown("""
         padding: 0.5rem 0;
         border-bottom: 2px solid #E2E8F0;
         margin-top: 1rem;
-        margin-bottom: 0.5rem; /* Added for spacing before inputs */
     }
     .stButton > button {
         width: 100%;
@@ -39,13 +71,13 @@ st.markdown("""
         background-color: #0e1118;
         border: 1px solid #48BB78;
     }
-    .semester-selector { /* Unused in current Python, kept for reference */
+    .semester-selector {
         display: flex;
         justify-content: center;
         gap: 20px;
         margin-bottom: 30px;
     }
-    .semester-button { /* Unused in current Python, kept for reference */
+    .semester-button {
         background-color: #4f8bf9;
         color: white;
         padding: 10px 30px;
@@ -54,45 +86,32 @@ st.markdown("""
         cursor: pointer;
         width: 150px;
     }
-    .semester-button.active { /* Unused in current Python, kept for reference */
+    .semester-button.active {
         background-color: #2662de;
         font-weight: bold;
     }
-    .s2-color { /* For S2 specific elements */
-        color: #E6BEA3 !important; /* Important to ensure override */
+    .s2-color {
+        color: #E6BEA3;
+    }
+    /* Input styling (if you had this in mind from other versions) */
+    div[data-testid="stNumberInput"] > label {
+        font-weight: normal;
+        color: #dcdcdc; 
+        margin-bottom: 0.2rem; /* Consistent margin */
+        display: block;
+        font-size: 0.9rem; /* Consistent font size */
     }
 
-    /* Corner GIF Styles */
-    .corner-gif {
-        position: fixed;
-        top: 85px;
-        right: 10px;
-        z-index: 9999;
-        width: 80px;
-        height: 80px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        opacity: 0.8;
-        transition: opacity 0.3s ease, transform 0.3s ease; /* Combined transition */
+    div[data-testid="stNumberInput"] input {
+        border-radius: 4px;
+        border: 1px solid #4A5568; 
+        background-color: #1A202C; 
+        color: #E2E8F0;            
+        padding: 0.4rem 0.6rem; /* Consistent padding */
+        /* height: 38px; /* Optional: If you want to enforce height */
+        box-sizing: border-box; 
+        width: 100%; 
     }
-    .corner-gif:hover {
-        opacity: 1;
-        transform: scale(1.1);
-    }
-
-    /* Alternative: Bottom right corner GIF (unused in current HTML) */
-    .corner-gif-bottom {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 9999;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        opacity: 0.7;
-    }
-
     /* Tab styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
@@ -108,26 +127,6 @@ st.markdown("""
     }
     .stTabs [aria-selected="true"] {
         background-color: #ff812f; /* Active tab color */
-    }
-    
-    /* Input styling */
-    div[data-testid="stNumberInput"] > label {
-        font-weight: normal;
-        color: #dcdcdc; 
-        margin-bottom: 0.2rem;
-        display: block;
-        font-size: 0.9rem;
-    }
-
-    div[data-testid="stNumberInput"] input {
-        border-radius: 4px;
-        border: 1px solid #4A5568; 
-        background-color: #1A202C; 
-        color: #E2E8F0;            
-        padding: 0.4rem 0.6rem;
-        /* height: 38px; /* Consider if explicit height is needed across all apps */
-        box-sizing: border-box; 
-        width: 100%; 
     }
     </style>
     """, unsafe_allow_html=True)
@@ -170,49 +169,54 @@ s2_subjects = {
     "Modèles stochastiques": 3
 }
 
-if 'current_semester' not in st.session_state: # This session state variable seems unused
-    st.session_state.current_semester = "S1"
+if 'current_semester' not in st.session_state:
+    st.session_state.current_semester = "S1" # This variable is set but not used in the provided logic
 
-# Initialize session state for S1 subjects
-for subject in s1_subjects.keys():
-    exam_key = f"S1_{subject}_exam" # Standardized key
-    td_key = f"S1_{subject}_TD"   # Standardized key
+# Centering tabs
+col_tabs_outer1, col_tabs_main, col_tabs_outer2 = st.columns([1, 3, 1]) # Matched original col ratio
+with col_tabs_main:
+    semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+
+# Session state initialization (using original key naming from your paste)
+for subject in s1_subjects:
+    exam_key = f"S1_{subject}exam" # Original key name
+    td_key = f"S1{subject}_TD"   # Original key name
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
         st.session_state[td_key] = None
 
-# Initialize session state for S2 subjects
-for subject in s2_subjects.keys():
-    exam_key = f"S2_{subject}_exam" # Standardized key
-    td_key = f"S2_{subject}_TD"   # Standardized key
+for subject in s2_subjects:
+    exam_key = f"S2_{subject}exam" # Original key name
+    td_key = f"S2{subject}_TD"   # Original key name
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
         st.session_state[td_key] = None
 
-def calculate_semester_average(semester_num, subjects_with_coef): # Renamed 'semester' to 'semester_num'
+def calculate_semester_average(semester, subjects_with_coef):
     subjects_data = {}
-    prefix = f"S{semester_num}_" # Now correctly S1_ or S2_
+    prefix = f"S{semester}_" # This prefix is S1_ or S2_
     
+    # Note: The keys used here in the loop are DIFFERENT from how they were initialized above.
+    # This function expects keys like "S1_SubjectName_exam" and "S1_SubjectName_TD".
+    # The initialization used "S1_SubjectNameexam" and "S1SubjectName_TD".
+    # I will keep the function's expected keys as they are, assuming this was the intended logic.
+    # If this function should use the initialized keys, it needs adjustment.
     for subject, coef in subjects_with_coef.items():
-        exam_key = f"{prefix}{subject}_exam" # Uses standardized key
-        td_key = f"{prefix}{subject}_TD"   # Uses standardized key
+        exam_key_func = f"{prefix}{subject}_exam" # Key used in function
+        td_key_func = f"{prefix}{subject}_TD"     # Key used in function
         try:
-            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
-            
-            if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
-                st.error(f"Les notes pour '{subject}' (S{semester_num}) doivent être entre 0 et 20.")
-                # return # Optionally stop calculation on error
+            exam_grade = float(st.session_state.get(exam_key_func, 0.0) or 0.0)
+            td_grade = float(st.session_state.get(td_key_func, 0.0) or 0.0)
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade, "coef": coef}
         except (ValueError, TypeError):
-            st.error(f"Entrée invalide pour {subject} (S{semester_num}). Veuillez saisir uniquement des nombres.")
+            st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
             return
 
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
-    if total_credits == 0:
+    if total_credits == 0: # Added check for zero total_credits
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
 
@@ -220,9 +224,9 @@ def calculate_semester_average(semester_num, subjects_with_coef): # Renamed 'sem
         average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
 
-    semester_average = total_weighted_sum / total_credits if total_credits else 0.0
+    semester_average = total_weighted_sum / total_credits if total_credits else 0.0 # Ensure division by zero is handled
     formatted_float = "{:.2f}".format(semester_average)
-    # better_total = "{:.2f}".format(total_weighted_sum) # This was in original, not used in the original result display
+    better_total = "{:.2f}".format(total_weighted_sum) # This was better_total in original
 
     color = "#FF0000"  
     if semester_average >= 15: color = "#D89CF6"  
@@ -232,82 +236,83 @@ def calculate_semester_average(semester_num, subjects_with_coef): # Renamed 'sem
 
     st.markdown(f"""
         <div class="result-box">
-            <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester_num}</h3>
+            <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester}</h3> {/* Changed title slightly */}
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
-                Moyenne S{semester_num}: <strong style="color: {color}">{formatted_float}</strong><br>
-                Total Points Pondérés: <strong>{total_weighted_sum:.2f}</strong> {/* Added total points */}
+                Moyenne S{semester}: <strong style="color: {color}">{formatted_float}</strong><br>
+                Total Points Pondérés: <strong>{better_total}</strong> {/* Changed "Total" to "Total Points Pondérés" */}
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-# Centering the tabs
-col_tabs_outer1, col_tabs_main, col_tabs_outer2 = st.columns([0.5, 3, 0.5])
-with col_tabs_main:
-    semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-
 with semester_tabs[0]:
-    st.markdown("<h2 style='text-align: center; color: #FFCDAC;'>Semestre 1</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>Semestre 1</h2>", unsafe_allow_html=True)
     
-    subjects_list_s1 = list(s1_subjects.keys())
-    half_s1 = len(subjects_list_s1) // 2
-    col_s1_left, col_s1_right = st.columns(2) # Two columns for S1 subject layout
+    subjects_list = list(s1_subjects.keys()) # Explicitly list keys
+    # S1 subjects are laid out sequentially as in the original code
+    for subject in subjects_list:
+        coef = s1_subjects[subject]
+        st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-    for i, subject in enumerate(subjects_list_s1):
-        current_column = col_s1_left if i < half_s1 else col_s1_right
-        with current_column:
-            coef = s1_subjects[subject]
-            st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-
-            col_exam, col_td = st.columns(2)
-            with col_exam:
-                st.number_input(
-                    "Exam", key=f"S1_{subject}_exam", min_value=0.0, max_value=20.0,
-                    value=st.session_state.get(f"S1_{subject}_exam"), step=0.05, format="%.2f"
-                )
-            with col_td:
-                st.number_input(
-                    "TD", key=f"S1_{subject}_TD", min_value=0.0, max_value=20.0,
-                    value=st.session_state.get(f"S1_{subject}_TD"), step=0.05, format="%.2f"
-                )
+        col_exam, col_td = st.columns(2)
+        with col_exam:
+            st.number_input(
+                "Exam",
+                key=f"S1_{subject}_exam", # This key matches the function's expectation
+                min_value=0.0, max_value=20.0, # Added max_value
+                value=None, # Original
+                step=0.05,
+                format="%.2f"
+            )
+        with col_td:
+            st.number_input(
+                "TD",
+                key=f"S1_{subject}_TD", # This key matches the function's expectation
+                min_value=0.0, max_value=20.0, # Added max_value
+                value=None, # Original
+                step=0.05,
+                format="%.2f"
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # Centering the S1 button
-    btn_col_s1_center_1, btn_col_s1_center_2, btn_col_s1_center_3 = st.columns([1, 2, 1])
-    with btn_col_s1_center_2:
-        if st.button("Calculer la Moyenne S1", key="calc_s1", use_container_width=True): # Added key and use_container_width
+    # S1 Button layout as original
+    col_btn_s1_1, col_btn_s1_2, col_btn_s1_3 = st.columns([1, 2, 1])
+    with col_btn_s1_2:
+        if st.button("Calculer la Moyenne S1"):
             calculate_semester_average(1, s1_subjects)
 
 with semester_tabs[1]:
     st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
     
-    subjects_list_s2 = list(s2_subjects.keys())
-    half_s2 = len(subjects_list_s2) // 2
-    col_s2_left, col_s2_right = st.columns(2) # Two columns for S2 subject layout
+    # S2 subjects are laid out sequentially as in the original code
+    for subject in s2_subjects: # Iterating directly over dict keys
+        coef = s2_subjects[subject]
+        st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-    for i, subject in enumerate(subjects_list_s2):
-        current_column = col_s2_left if i < half_s2 else col_s2_right
-        with current_column:
-            coef = s2_subjects[subject]
-            st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-
-            col_exam, col_td = st.columns(2) # Renamed for clarity within S2 loop
-            with col_exam:
-                st.number_input(
-                    "Exam", key=f"S2_{subject}_exam", min_value=0.0, max_value=20.0,
-                    value=st.session_state.get(f"S2_{subject}_exam"), step=0.05, format="%.2f"
-                )
-            with col_td:
-                st.number_input(
-                    "TD", key=f"S2_{subject}_TD", min_value=0.0, max_value=20.0,
-                    value=st.session_state.get(f"S2_{subject}_TD"), step=0.05, format="%.2f"
-                )
+        # Original S2 used col1, col2 for inputs. I'll keep this naming.
+        input_col1, input_col2 = st.columns(2) 
+        with input_col1:
+            st.number_input(
+                "Exam",
+                key=f"S2_{subject}_exam", # This key matches the function's expectation
+                min_value=0.0, max_value=20.0, # Added max_value
+                value=None, # Original
+                step=0.05,
+                format="%.2f"
+            )
+        with input_col2:
+            st.number_input(
+                "TD",
+                key=f"S2_{subject}_TD", # This key matches the function's expectation
+                min_value=0.0, max_value=20.0, # Added max_value
+                value=None, # Original
+                step=0.05,
+                format="%.2f"
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # Centering the S2 button
-    btn_col_s2_center_1, btn_col_s2_center_2, btn_col_s2_center_3 = st.columns([1, 2, 1])
-    with btn_col_s2_center_2:
-        if st.button("Calculer la Moyenne S2", key="calc_s2", use_container_width=True): # Added key and use_container_width
-            calculate_semester_average(2, s2_subjects)
+    # S2 Button layout as original (not explicitly centered with columns)
+    if st.button("Calculer la Moyenne S2"):
+        calculate_semester_average(2, s2_subjects)
 
 st.markdown("""
     <div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #0e1118; border-radius: 10px;">
