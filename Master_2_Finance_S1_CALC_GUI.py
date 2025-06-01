@@ -18,14 +18,8 @@ st.markdown("""
         margin-bottom: 2rem;
         font-weight: bold;
     }
-    .subject-header {
-        color: #FFCDAC;
-        font-size: 1.2rem;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid #E2E8F0;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem; /* Space before inputs */
-    }
+    /* Removed .subject-header as expander handles titles */
+
     .stButton > button {
         width: 100%;
         background-color: #ff812f;
@@ -38,27 +32,9 @@ st.markdown("""
         background-color: #0e1118;
         border: 1px solid #48BB78;
     }
-    .semester-selector {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-    .semester-button {
-        background-color: #4f8bf9;
-        color: white;
-        padding: 10px 30px;
-        border-radius: 20px;
-        text-align: center;
-        cursor: pointer;
-        width: 150px;
-    }
-    .semester-button.active {
-        background-color: #2662de;
-        font-weight: bold;
-    }
-    .s2-color { /* For S2 subject headers */
-        color: #E6BEA3 !important; /* Use important if needed to override */
+
+    .s2-color { /* For S2 subject headers in expanders */
+        color: #E6BEA3 !important;
     }
     
     /* Corner GIF Styles */
@@ -122,7 +98,6 @@ st.markdown("""
         width: 100%;
     }
 
-    /* Tab styling from previous example - ensure it's still what you want */
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
         justify-content: center;
@@ -130,14 +105,34 @@ st.markdown("""
     .stTabs [data-baseweb="tab"] {
         height: 50px;
         padding: 0px 24px;
-        background-color: #262730; /* Default tab color */
+        background-color: #262730; 
         border-radius: 10px 10px 0px 0px;
         color: white;
         font-weight: bold;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #ff812f; /* Active tab color */
+        background-color: #ff812f; 
     }
+
+    /* Expander styling */
+    .stExpander > div > button { /* Target expander header button */
+        color: #FFCDAC; /* Match S1 subject header color */
+        font-size: 1.1rem; /* Slightly smaller than original subject-header */
+    }
+    .stExpander > div > button p { /* Target the paragraph inside the button */
+        font-weight: normal; /* Make expander title normal weight if desired */
+    }
+    .stExpander[aria-expanded="true"] > div > button {
+        /* Style for expanded header if needed */
+    }
+    .stExpander div[data-testid="stVerticalBlock"] { /* Content of expander */
+        padding-top: 0.5rem; /* Add some padding to content */
+    }
+    /* Custom styling for S2 expander headers */
+    .s2-expander .stExpander > div > button {
+        color: #E6BEA3 !important; /* S2 color for expander header text */
+    }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -247,10 +242,9 @@ with semester_tabs[0]:
     for i, subject in enumerate(s1_list):
         current_column = col_s1_left if i < half_s1 else col_s1_right
         with current_column:
-            with st.container(): # ADDED CONTAINER
-                coef = s1_subjects_coef[subject]
-                st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-
+            coef = s1_subjects_coef[subject]
+            # Use st.expander for each subject
+            with st.expander(f"{subject} (Coef: {coef})", expanded=True):
                 exam_key_s1 = f"S1_{subject}_exam"
                 td_key_s1 = f"S1_{subject}_TD"
                 module_avg_key_s1 = f"S1_{subject}_module_avg"
@@ -259,11 +253,11 @@ with semester_tabs[0]:
                 with subcol_exam:
                     st.number_input("Exam", key=exam_key_s1, min_value=0.0, max_value=20.0,
                                     value=st.session_state.get(exam_key_s1), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S1", subject))
+                                    on_change=calculate_and_store_module_average, args=("S1", subject), label_visibility="collapsed")
                 with subcol_td:
                     st.number_input("TD", key=td_key_s1, min_value=0.0, max_value=20.0,
                                     value=st.session_state.get(td_key_s1), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S1", subject))
+                                    on_change=calculate_and_store_module_average, args=("S1", subject), label_visibility="collapsed")
                 with subcol_avg:
                     avg_val = float(st.session_state.get(module_avg_key_s1, 0.0))
                     avg_color = "#FF0000" 
@@ -271,14 +265,17 @@ with semester_tabs[0]:
                     elif avg_val >= 10: avg_color = "#50D890" 
                     elif avg_val >= 7: avg_color = "#4682B4"
                     
+                    # No explicit label for Moyenne, as the "box" is just the value now.
+                    # Adjust margin if needed for vertical alignment with number_inputs
                     module_avg_html = f"""
-                    <div> 
-                        <label class='module-average-label'>Moyenne</label>
+                    <div style="margin-top: 0rem;"> {/* Adjusted margin for potential alignment */}
+                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'} {/* Conditionally show label */}
                         <div class="module-average-display" style="color: {avg_color};">
                             {avg_val:.2f}
                         </div>
                     </div>
-                    """
+                    """ # Removed "Moyenne" label from here, assuming it's implied by context or handled by expander.
+                      # Added label_visibility="collapsed" to number_inputs.
                     st.markdown(module_avg_html, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
@@ -296,11 +293,11 @@ with semester_tabs[1]:
 
     for i, subject in enumerate(s2_list):
         current_column = col_s2_left if i < half_s2 else col_s2_right
-        with current_column:
-            with st.container(): # ADDED CONTAINER
-                coef = s2_subjects_coef[subject]
-                st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-
+        # Apply s2-expander class to the column for specific expander header styling
+        current_column.markdown('<div class="s2-expander">', unsafe_allow_html=True)
+        with current_column: # This with is for the DeltaGenerator of the column
+            coef = s2_subjects_coef[subject]
+            with st.expander(f"{subject} (Coef: {coef})", expanded=True):
                 exam_key_s2 = f"S2_{subject}_exam"
                 td_key_s2 = f"S2_{subject}_TD"
                 module_avg_key_s2 = f"S2_{subject}_module_avg"
@@ -309,11 +306,11 @@ with semester_tabs[1]:
                 with subcol_exam:
                     st.number_input("Exam",key=exam_key_s2, min_value=0.0, max_value=20.0,
                                     value=st.session_state.get(exam_key_s2), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S2", subject))
+                                    on_change=calculate_and_store_module_average, args=("S2", subject), label_visibility="collapsed")
                 with subcol_td:
                     st.number_input("TD", key=td_key_s2, min_value=0.0, max_value=20.0,
                                     value=st.session_state.get(td_key_s2), step=0.05, format="%.2f",
-                                    on_change=calculate_and_store_module_average, args=("S2", subject))
+                                    on_change=calculate_and_store_module_average, args=("S2", subject), label_visibility="collapsed")
                 with subcol_avg:
                     avg_val = float(st.session_state.get(module_avg_key_s2, 0.0))
                     avg_color = "#FF0000"
@@ -322,14 +319,16 @@ with semester_tabs[1]:
                     elif avg_val >= 7: avg_color = "#4682B4"
                     
                     module_avg_html = f"""
-                    <div>
-                        <label class='module-average-label'>Moyenne</label>
+                    <div style="margin-top: 0rem;">
+                        {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'}
                         <div class="module-average-display" style="color: {avg_color};">
                             {avg_val:.2f}
                         </div>
                     </div>
                     """
                     st.markdown(module_avg_html, unsafe_allow_html=True)
+        current_column.markdown('</div>', unsafe_allow_html=True) # Close s2-expander div
+
 
     st.markdown("<br>", unsafe_allow_html=True)
     btn_col_s2_1, btn_col_s2_2, btn_col_s2_3 = st.columns([1,1,1])
