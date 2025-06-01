@@ -170,25 +170,24 @@ s2_subjects = {
 }
 
 if 'current_semester' not in st.session_state:
-    st.session_state.current_semester = "S1" # This variable is set but not used in the provided logic
+    st.session_state.current_semester = "S1"
 
-# Centering tabs
-col_tabs_outer1, col_tabs_main, col_tabs_outer2 = st.columns([1, 3, 1]) # Matched original col ratio
-with col_tabs_main:
+col1, col2, col3 = st.columns([1, 3, 1])
+with col2:
     semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
 
-# Session state initialization (using original key naming from your paste)
+# Session state initialization - MATCHING THE KEYS USED IN WIDGETS
 for subject in s1_subjects:
-    exam_key = f"S1_{subject}exam" # Original key name
-    td_key = f"S1{subject}_TD"   # Original key name
+    exam_key = f"S1_{subject}_exam" # Corrected to match widget key
+    td_key = f"S1_{subject}_TD"   # Corrected to match widget key
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
         st.session_state[td_key] = None
 
 for subject in s2_subjects:
-    exam_key = f"S2_{subject}exam" # Original key name
-    td_key = f"S2{subject}_TD"   # Original key name
+    exam_key = f"S2_{subject}_exam" # Corrected to match widget key
+    td_key = f"S2_{subject}_TD"   # Corrected to match widget key
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
@@ -196,16 +195,11 @@ for subject in s2_subjects:
 
 def calculate_semester_average(semester, subjects_with_coef):
     subjects_data = {}
-    prefix = f"S{semester}_" # This prefix is S1_ or S2_
+    prefix = f"S{semester}_"
     
-    # Note: The keys used here in the loop are DIFFERENT from how they were initialized above.
-    # This function expects keys like "S1_SubjectName_exam" and "S1_SubjectName_TD".
-    # The initialization used "S1_SubjectNameexam" and "S1SubjectName_TD".
-    # I will keep the function's expected keys as they are, assuming this was the intended logic.
-    # If this function should use the initialized keys, it needs adjustment.
     for subject, coef in subjects_with_coef.items():
-        exam_key_func = f"{prefix}{subject}_exam" # Key used in function
-        td_key_func = f"{prefix}{subject}_TD"     # Key used in function
+        exam_key_func = f"{prefix}{subject}_exam" 
+        td_key_func = f"{prefix}{subject}_TD"     
         try:
             exam_grade = float(st.session_state.get(exam_key_func, 0.0) or 0.0)
             td_grade = float(st.session_state.get(td_key_func, 0.0) or 0.0)
@@ -216,7 +210,7 @@ def calculate_semester_average(semester, subjects_with_coef):
 
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
-    if total_credits == 0: # Added check for zero total_credits
+    if total_credits == 0: 
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
 
@@ -224,9 +218,9 @@ def calculate_semester_average(semester, subjects_with_coef):
         average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
 
-    semester_average = total_weighted_sum / total_credits if total_credits else 0.0 # Ensure division by zero is handled
+    semester_average = total_weighted_sum / total_credits if total_credits else 0.0 
     formatted_float = "{:.2f}".format(semester_average)
-    better_total = "{:.2f}".format(total_weighted_sum) # This was better_total in original
+    better_total = "{:.2f}".format(total_weighted_sum)
 
     color = "#FF0000"  
     if semester_average >= 15: color = "#D89CF6"  
@@ -236,10 +230,10 @@ def calculate_semester_average(semester, subjects_with_coef):
 
     st.markdown(f"""
         <div class="result-box">
-            <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester}</h3> {/* Changed title slightly */}
+            <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester}</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
                 Moyenne S{semester}: <strong style="color: {color}">{formatted_float}</strong><br>
-                Total Points Pondérés: <strong>{better_total}</strong> {/* Changed "Total" to "Total Points Pondérés" */}
+                Total Points Pondérés: <strong>{better_total}</strong>
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -247,8 +241,7 @@ def calculate_semester_average(semester, subjects_with_coef):
 with semester_tabs[0]:
     st.markdown("<h2 style='text-align: center;'>Semestre 1</h2>", unsafe_allow_html=True)
     
-    subjects_list = list(s1_subjects.keys()) # Explicitly list keys
-    # S1 subjects are laid out sequentially as in the original code
+    subjects_list = list(s1_subjects.keys()) 
     for subject in subjects_list:
         coef = s1_subjects[subject]
         st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
@@ -257,24 +250,24 @@ with semester_tabs[0]:
         with col_exam:
             st.number_input(
                 "Exam",
-                key=f"S1_{subject}_exam", # This key matches the function's expectation
-                min_value=0.0, max_value=20.0, # Added max_value
-                value=None, # Original
+                key=f"S1_{subject}_exam", 
+                min_value=0.0, max_value=20.0, 
+                value=None, 
                 step=0.05,
                 format="%.2f"
             )
         with col_td:
             st.number_input(
                 "TD",
-                key=f"S1_{subject}_TD", # This key matches the function's expectation
-                min_value=0.0, max_value=20.0, # Added max_value
-                value=None, # Original
+                key=f"S1_{subject}_TD", 
+                min_value=0.0, max_value=20.0, 
+                value=None, 
                 step=0.05,
                 format="%.2f"
             )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # S1 Button layout as original
+
     col_btn_s1_1, col_btn_s1_2, col_btn_s1_3 = st.columns([1, 2, 1])
     with col_btn_s1_2:
         if st.button("Calculer la Moyenne S1"):
@@ -283,34 +276,32 @@ with semester_tabs[0]:
 with semester_tabs[1]:
     st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
     
-    # S2 subjects are laid out sequentially as in the original code
-    for subject in s2_subjects: # Iterating directly over dict keys
+    for subject in s2_subjects: 
         coef = s2_subjects[subject]
         st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
 
-        # Original S2 used col1, col2 for inputs. I'll keep this naming.
         input_col1, input_col2 = st.columns(2) 
         with input_col1:
             st.number_input(
                 "Exam",
-                key=f"S2_{subject}_exam", # This key matches the function's expectation
-                min_value=0.0, max_value=20.0, # Added max_value
-                value=None, # Original
+                key=f"S2_{subject}_exam", 
+                min_value=0.0, max_value=20.0, 
+                value=None, 
                 step=0.05,
                 format="%.2f"
             )
         with input_col2:
             st.number_input(
                 "TD",
-                key=f"S2_{subject}_TD", # This key matches the function's expectation
-                min_value=0.0, max_value=20.0, # Added max_value
-                value=None, # Original
+                key=f"S2_{subject}_TD", 
+                min_value=0.0, max_value=20.0, 
+                value=None, 
                 step=0.05,
                 format="%.2f"
             )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # S2 Button layout as original (not explicitly centered with columns)
+
     if st.button("Calculer la Moyenne S2"):
         calculate_semester_average(2, s2_subjects)
 
