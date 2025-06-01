@@ -116,8 +116,8 @@ st.markdown("""
 
     /* Expander styling */
     .stExpander > div > button { /* Target expander header button */
-        color: #FFCDAC; /* Match S1 subject header color */
         font-size: 1.1rem; /* Slightly smaller than original subject-header */
+        /* color: #FFCDAC; <- Removed default color here, will be set by tab */
     }
     .stExpander > div > button p { /* Target the paragraph inside the button */
         font-weight: normal; /* Make expander title normal weight if desired */
@@ -128,10 +128,17 @@ st.markdown("""
     .stExpander div[data-testid="stVerticalBlock"] { /* Content of expander */
         padding-top: 0.5rem; /* Add some padding to content */
     }
-    /* Custom styling for S2 expander headers */
-    .s2-expander .stExpander > div > button {
-        color: #E6BEA3 !important; /* S2 color for expander header text */
+    
+    /* Styling for S1 expander headers (content of the first tab) */
+    section[aria-labelledby$="-tab-0"] .stExpander > div > button {
+        color: #FFCDAC; /* S1 color */
     }
+
+    /* Styling for S2 expander headers (content of the second tab) */
+    section[aria-labelledby$="-tab-1"] .stExpander > div > button {
+        color: #E6BEA3; /* S2 color */
+    }
+    /* Removed .s2-expander rule as it's no longer used */
 
     </style>
     """, unsafe_allow_html=True)
@@ -243,7 +250,6 @@ with semester_tabs[0]:
         current_column = col_s1_left if i < half_s1 else col_s1_right
         with current_column:
             coef = s1_subjects_coef[subject]
-            # Use st.expander for each subject
             with st.expander(f"{subject} (Coef: {coef})", expanded=True):
                 exam_key_s1 = f"S1_{subject}_exam"
                 td_key_s1 = f"S1_{subject}_TD"
@@ -265,8 +271,6 @@ with semester_tabs[0]:
                     elif avg_val >= 10: avg_color = "#50D890" 
                     elif avg_val >= 7: avg_color = "#4682B4"
                     
-                    # No explicit label for Moyenne, as the "box" is just the value now.
-                    # Adjust margin if needed for vertical alignment with number_inputs
                     module_avg_html = f"""
                     <div style="margin-top: 0rem;">
                         {'' if avg_val == 0.0 else '<label class="module-average-label">Moyenne</label>'}
@@ -274,8 +278,7 @@ with semester_tabs[0]:
                             {avg_val:.2f}
                         </div>
                     </div>
-                    """ # Removed "Moyenne" label from here, assuming it's implied by context or handled by expander.
-                      # Added label_visibility="collapsed" to number_inputs.
+                    """
                     st.markdown(module_avg_html, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
@@ -293,9 +296,8 @@ with semester_tabs[1]:
 
     for i, subject in enumerate(s2_list):
         current_column = col_s2_left if i < half_s2 else col_s2_right
-        # Apply s2-expander class to the column for specific expander header styling
-        current_column.markdown('<div class="s2-expander">', unsafe_allow_html=True)
-        with current_column: # This with is for the DeltaGenerator of the column
+        # REMOVED: current_column.markdown('<div class="s2-expander">', unsafe_allow_html=True)
+        with current_column: 
             coef = s2_subjects_coef[subject]
             with st.expander(f"{subject} (Coef: {coef})", expanded=True):
                 exam_key_s2 = f"S2_{subject}_exam"
@@ -327,7 +329,7 @@ with semester_tabs[1]:
                     </div>
                     """
                     st.markdown(module_avg_html, unsafe_allow_html=True)
-        current_column.markdown('</div>', unsafe_allow_html=True) # Close s2-expander div
+        # REMOVED: current_column.markdown('</div>', unsafe_allow_html=True) 
 
 
     st.markdown("<br>", unsafe_allow_html=True)
