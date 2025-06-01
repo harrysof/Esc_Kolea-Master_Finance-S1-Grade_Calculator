@@ -223,7 +223,7 @@ def calculate_semester_average(semester_num, subjects_map): # Parameter name cha
             <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester_num}</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
                 Moyenne S{semester_num}: <strong style="color: {color}">{formatted_float}</strong><br>
-                {'' if semester_num == 2 else f"Total Points Pondérés: <strong>{total_weighted_sum:.2f}</strong>"} {/* Example if you want to show total points for S1 */}
+                {'' if semester_num == 2 else f"Total Points Pondérés: <strong>{total_weighted_sum:.2f}</strong>"}
             </p>
         </div>
     """, unsafe_allow_html=True)
