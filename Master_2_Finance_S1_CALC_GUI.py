@@ -6,7 +6,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Corrected CSS block structure
 st.markdown("""
     <style>
     /* Corner GIF Styles */
@@ -176,18 +175,17 @@ col1, col2, col3 = st.columns([1, 3, 1])
 with col2:
     semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
 
-# Session state initialization - MATCHING THE KEYS USED IN WIDGETS
 for subject in s1_subjects:
-    exam_key = f"S1_{subject}_exam" # Corrected to match widget key
-    td_key = f"S1_{subject}_TD"   # Corrected to match widget key
+    exam_key = f"S1_{subject}_exam"
+    td_key = f"S1_{subject}_TD" 
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
         st.session_state[td_key] = None
 
 for subject in s2_subjects:
-    exam_key = f"S2_{subject}_exam" # Corrected to match widget key
-    td_key = f"S2_{subject}_TD"   # Corrected to match widget key
+    exam_key = f"S2_{subject}_exam"
+    td_key = f"S2_{subject}_TD"
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None
     if td_key not in st.session_state:
@@ -233,7 +231,6 @@ def calculate_semester_average(semester, subjects_with_coef):
             <h3 style="color: #2F855A; margin: 0;">📊 Résultats Semestre {semester}</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
                 Moyenne S{semester}: <strong style="color: {color}">{formatted_float}</strong><br>
-                Total Points Pondérés: <strong>{better_total}</strong>
             </p>
         </div>
     """, unsafe_allow_html=True)
